@@ -83,10 +83,10 @@ Hay dos formas de usarlo:
 ## Vista rápida
 
 <p align="center">
-  <img src="assets/preview.png?v=2" alt="kurenai en una terminal de 80 columnas" width="100%">
+  <img src="assets/preview.png?v=3" alt="kurenai en una terminal de 40 columnas" width="514">
 </p>
 
-> Captura del panel de una sola vez a 80 columnas.
+> Captura a 40 columnas. Las IPs son de ejemplo.
 
 ## Requisitos
 
@@ -218,10 +218,10 @@ kurenai -m -n          # oculta la IP pública
 El modo monitor entra en la pantalla alternativa, oculta el cursor y redibuja el panel cada segundo. Mantiene la misma estética: rojo neón, barras `▰/▱`, reglas `─` y dos columnas.
 
 <p align="center">
-  <img src="assets/monitor.gif?v=2" alt="kurenai -m actualizando el panel en vivo" width="100%">
+  <img src="assets/monitor.gif?v=3" alt="kurenai -m actualizando el panel en vivo" width="100%">
 </p>
 
-> GIF a 0.5 s para que se aprecie el refresco; el intervalo por defecto es 1 s.
+> GIF a 0.5 s para que se aprecie el refresco; el intervalo por defecto es 1 s. Las IPs son de ejemplo.
 
 | Tecla | Acción |
 | --- | --- |
