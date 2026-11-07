@@ -3,15 +3,19 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/swbasmx/kurenai/releases/latest"><img src="https://img.shields.io/github/v/release/swbasmx/kurenai?color=FF0000&label=release" alt="Última versión"></a>
   <a href="#instalación"><img src="https://img.shields.io/badge/bash-4%2B-4EAA25?logo=gnubash&logoColor=white" alt="Bash 4+"></a>
   <a href="#compatibilidad"><img src="https://img.shields.io/badge/platform-Linux-FF0000?logo=linux&logoColor=white" alt="Linux"></a>
   <a href="#licencia"><img src="https://img.shields.io/badge/license-MIT-FF0000" alt="MIT"></a>
-  <a href="#uso"><img src="https://img.shields.io/badge/version-3.2-FF0000" alt="Versión 3.2"></a>
   <a href="https://github.com/swbasmx/kurenai/actions/workflows/ci.yml"><img src="https://github.com/swbasmx/kurenai/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
 </p>
 
 <p align="center">
   <strong>System info para terminal. Rojo neón, dos columnas, modo monitor y cero dependencias raras.</strong>
+</p>
+
+<p align="center">
+  <a href="README.md">Español</a> · <a href="README.en.md">English</a>
 </p>
 
 <p align="center">
@@ -25,15 +29,41 @@
 
 ---
 
+<p align="center">
+  <img src="assets/preview.png?v=6" alt="kurenai en una terminal de GNOME" width="100%">
+</p>
+
+<p align="center">
+  <em>Renderizado con el motor de GNOME Terminal (VTE) a 80 columnas. Las IPs son de ejemplo.</em>
+</p>
+
+```bash
+curl -fsSLO https://raw.githubusercontent.com/swbasmx/kurenai/main/install.sh && sudo bash install.sh
+```
+
 `kurenai` es un panel de sistema para terminal escrito en Bash. Muestra sistema, hardware, rendimiento y memoria en una interfaz roja, con barras, una sparkline de CPU y un layout que se adapta al ancho de la terminal. Puede ejecutarse una sola vez o quedarse en modo monitor.
 
 Repositorio: <https://github.com/swbasmx/kurenai>
 
+## Por qué kurenai
+
+- **Un solo archivo Bash.** Sin binario, sin runtime, sin módulos. Se lee entero en una sentada.
+- **Sin dependencias.** Solo `awk`, `sed`, `df`, `/proc` y `/sys`. `curl`, `lspci` y `nvidia-smi` son opcionales.
+- **Rápido de abrir.** Alrededor de 0.6 s en un equipo modesto; el autoarranque no te frena la terminal.
+- **Modo monitor de verdad.** El mismo panel se refresca en vivo cada segundo, con pausa y cambio de intervalo.
+- **Se adapta al ancho.** Dos columnas a partir de 78 caracteres y una sola en terminales de 40.
+- **Respeta el terminal.** `NO_COLOR`, `TERM=dumb`, redirecciones, `-q`, `-n`, truecolor con fallback a 256 y 16 colores.
+- **Instalación y desinstalación limpias.** Bloque marcado en `~/.bashrc`, copia de seguridad y nada más.
+- **Con tests.** 22 pruebas de humo, PTY e instalación, y CI en cada push.
+
+No es btop ni un neofetch con otro color: es un panel compacto que cabe en una terminal normal y no interrumpe lo que estés haciendo.
+
 ## Contenido
 
+- [Por qué kurenai](#por-qué-kurenai)
 - [¿Qué es?](#qué-es)
 - [Características](#características)
-- [Vista rápida](#vista-rápida)
+- [Monitor en vivo](#monitor-en-vivo)
 - [Requisitos](#requisitos)
 - [Instalación](#instalación)
 - [Uso](#uso)
@@ -80,13 +110,15 @@ Hay dos formas de usarlo:
 - **Instalador idempotente y actualizable**: reescribe el bloque marcado en `~/.bashrc`, no lo duplica y guarda una copia de seguridad.
 - **Respeta tu terminal**: `NO_COLOR`, `TERM=dumb`, redirecciones, `-q` y variables de entorno para desactivar red o animación.
 
-## Vista rápida
+## Monitor en vivo
 
 <p align="center">
-  <img src="assets/preview.png?v=5" alt="kurenai en una terminal de GNOME" width="100%">
+  <img src="assets/monitor.gif?v=6" alt="kurenai -m actualizando el panel en vivo" width="100%">
 </p>
 
-> Captura renderizada con el motor de GNOME Terminal (VTE) a 80 columnas. Las IPs son de ejemplo.
+> GIF del modo monitor renderizado con VTE a 80 columnas; el refresco del GIF es 0.5 s y el intervalo por defecto es 1 s. Las IPs son de ejemplo.
+
+`kurenai -m` mantiene el panel abierto y lo redibuja cada segundo. Detalles en [Modo monitor](#modo-monitor).
 
 ## Requisitos
 
@@ -216,12 +248,6 @@ kurenai -m -n          # oculta la IP pública
 ```
 
 El modo monitor entra en la pantalla alternativa, oculta el cursor y redibuja el panel cada segundo. Mantiene la misma estética: rojo neón, barras `▰/▱`, reglas `─` y dos columnas.
-
-<p align="center">
-  <img src="assets/monitor.gif?v=5" alt="kurenai -m actualizando el panel en vivo" width="100%">
-</p>
-
-> GIF del modo monitor renderizado con VTE a 80 columnas; el refresco del GIF es 0.5 s y el intervalo por defecto es 1 s. Las IPs son de ejemplo.
 
 | Tecla | Acción |
 | --- | --- |
@@ -477,6 +503,16 @@ Ideas para próximas versiones, sin compromiso:
 - Ejecuta `make check` antes de enviar un PR.
 - Respeta el estilo existente: Bash 4+, `shellcheck` limpio y tests en verde.
 - Documenta cualquier opción o variable nueva en este README.
+
+---
+
+<p align="center">
+  Si <strong>kurenai</strong> te resulta útil, dale una estrella al repo. Ayuda a que lo vea más gente.
+</p>
+
+<p align="center">
+  <a href="https://github.com/swbasmx/kurenai/stargazers"><img src="https://img.shields.io/github/stars/swbasmx/kurenai?style=for-the-badge&color=FF0000&labelColor=1a0000" alt="Estrellas en GitHub"></a>
+</p>
 
 ## Licencia
 
