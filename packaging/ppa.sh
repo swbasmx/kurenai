@@ -14,6 +14,7 @@ set -euo pipefail
 ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
 SERIES=${1:-jammy}
 PPA=${PPA:-ppa:swbasmx/kurenai}
+REV=${REV:-1}
 SEND=0
 [[ ${2:-} == --send ]] && SEND=1
 
@@ -33,7 +34,7 @@ fi
 
 base=$(awk '/^kurenai \(/ {print $2; exit}' "$ROOT/debian/changelog")
 upstream=${base%%-*}
-version="${base%%~*}~${SERIES}1"
+version="${base%%~*}~${SERIES}${REV}"
 
 work=$(mktemp -d "${TMPDIR:-/tmp}/kurenai-ppa.XXXXXX")
 trap 'rm -rf -- "$work"' EXIT
@@ -55,7 +56,11 @@ printf 'destino:   %s\n' "$PPA"
 
 (
   cd "$srcdir"
-  dpkg-buildpackage -S -sa -us -uc
+  if (( SEND )); then
+    dpkg-buildpackage -S -sa -k"$keyid"
+  else
+    dpkg-buildpackage -S -sa -us -uc
+  fi
 )
 
 changes=$work/kurenai_${version}_source.changes
@@ -65,7 +70,11 @@ changes=$work/kurenai_${version}_source.changes
 }
 
 if (( ! SEND )); then
-  printf '\nlisto. para subirlo:\n'
+  mkdir -p "$ROOT/dist-ppa"
+  cp -- "$work"/kurenai_"$version"* "$ROOT/dist-ppa"/
+  printf '\nartefactos en %s:\n' "$ROOT/dist-ppa"
+  ls -1 "$ROOT/dist-ppa"
+  printf '\npara subirlo:\n'
   printf '  debsign -k %s %s\n' "${keyid:-<KEYID>}" "$changes"
   printf '  dput %s %s\n' "$PPA" "$changes"
   printf '\n(o ejecuta: packaging/ppa.sh %s --send)\n' "$SERIES"
