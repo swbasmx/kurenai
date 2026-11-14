@@ -1,0 +1,14 @@
+#!/bin/sh
+# autopkgtest: comprueba que el binario instalado arranca sin red y sin TTY.
+set -eu
+
+kurenai -V | grep -q '^kurenai 3\.'
+
+out=$(COLUMNS=80 kurenai -n -q -l en)
+printf '%s\n' "$out" | grep -q 'SYSTEM'
+printf '%s\n' "$out" | grep -q 'HARDWARE'
+
+if COLUMNS=80 kurenai -n -q -l en | grep -q '[0-9]\{4,\}%'; then
+  echo 'porcentaje de cuatro dígitos' >&2
+  exit 1
+fi

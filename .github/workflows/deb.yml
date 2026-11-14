@@ -1,0 +1,57 @@
+name: deb
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'debian/**'
+      - 'kurenai'
+      - '.github/workflows/deb.yml'
+    tags: ['v*']
+  pull_request:
+    paths:
+      - 'debian/**'
+      - 'kurenai'
+      - '.github/workflows/deb.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            debhelper devscripts lintian fakeroot
+
+      - name: Build package
+        run: |
+          set -o pipefail
+          dpkg-buildpackage -us -uc -b
+          mkdir -p dist
+          cp ../kurenai_*.deb ../kurenai_*.buildinfo dist/
+
+      - name: Lintian
+        run: |
+          set -o pipefail
+          lintian --fail-on error dist/kurenai_*.deb 2>&1 | tee dist/lintian.txt
+
+      - name: Install and run
+        run: |
+          set -euo pipefail
+          sudo dpkg -i dist/kurenai_*.deb
+          kurenai -V
+          COLUMNS=80 kurenai -n -q -l en | grep -q SYSTEM
+          man -P cat kurenai | head -n 5
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kurenai-deb
+          path: dist/
+          if-no-files-found: error

@@ -1,0 +1,148 @@
+.TH KURENAI 1 "2026-11-14" "kurenai 3.2" "User Commands"
+.SH NAME
+kurenai \- neon-red system information panel for the terminal
+.SH SYNOPSIS
+.B kurenai
+.RI [ options ]
+.SH DESCRIPTION
+.B kurenai
+prints a compact panel with system, hardware, performance and memory
+information: kernel, shell, uptime, CPU, GPU, LAN and public IP,
+temperature, load, RAM, swap, disk, battery and a CPU sparkline.
+.PP
+Everything is read from
+.IR /proc ,
+.IR /sys ,
+.BR df (1),
+.BR lspci (8)
+and
+.BR nvidia-smi (1).
+The panel is written in Bash and has no runtime dependencies beyond the
+standard utilities.
+.PP
+It can run once, for example from a shell startup file, or stay open as a
+live monitor that redraws every second.
+.SH OPTIONS
+.TP
+.BR \-r ", " \-\-refresh
+Ignore the public IP cache and query the address again.
+.TP
+.BR \-n ", " \-\-no\-net
+Do not query the public IP.
+.TP
+.BR \-q ", " \-\-no\-anim
+Disable the animation and print a static panel.
+.TP
+.BR \-t ", " \-\-time " " \fIS\fR
+Animation length in seconds. Accepts a decimal comma. The default is 0.3;
+0 disables the animation.
+.TP
+.BR \-m ", " \-\-monitor
+Live monitor mode. Requires an interactive terminal.
+.TP
+.BR \-i ", " \-\-interval " " \fIS\fR
+Monitor refresh interval in seconds, between 0.25 and 10. Implies
+.BR \-m .
+.TP
+.BR \-\-frames " " \fIN\fR
+Render
+.I N
+frames and exit. Intended for tests.
+.TP
+.BR \-l ", " \-\-lang " " \fIL\fR
+Output language:
+.B es
+or
+.BR en .
+The default is taken from the locale.
+.TP
+.BR \-V ", " \-\-version
+Print the version and exit.
+.TP
+.BR \-h ", " \-\-help
+Print the help and exit.
+.SH MONITOR KEYS
+.TP
+.B q
+Quit and restore the terminal.
+.TP
+.B p
+Pause or resume data collection.
+.TP
+.B +
+Increase the refresh interval by 0.25 seconds.
+.TP
+.B \-
+Decrease the refresh interval by 0.25 seconds.
+.TP
+.B r
+Refresh static data and the public IP.
+.TP
+.B h
+Show or hide the help footer.
+.TP
+.B Ctrl\-C
+Quit and restore the terminal.
+.SH ENVIRONMENT
+.TP
+.B KURENAI_LANG
+Force the language,
+.B es
+or
+.BR en .
+.TP
+.B KURENAI_NO_NET
+If set to 1, do not query the public IP. Same as
+.BR \-n .
+.TP
+.B KURENAI_NO_ANIM
+If set to 1, disable the animation. Same as
+.BR \-q .
+.TP
+.B KURENAI_ACCENT
+Main color as three RGB components, for example
+.RB \(dq0 255 180\(dq.
+Defaults to
+.RB \(dq255 0 0\(dq.
+.TP
+.B KURENAI_BAR_W
+Bar width, from 4 to 14. Defaults to 10.
+.TP
+.B KURENAI_WIDTH
+Force the panel width, from 40 to 84. Useful for tests and screenshots.
+.TP
+.B KURENAI_INTERVAL
+Default monitor interval in seconds.
+.TP
+.B NO_COLOR
+If set, disable all color output.
+.SH FILES
+.TP
+.I ~/.cache/kurenai/public-ip
+Cached public IP address, created with mode 600 and valid for 15 minutes.
+The location follows
+.BR XDG_CACHE_HOME .
+.SH EXAMPLES
+.TP
+.B kurenai
+Print the panel with the default animation.
+.TP
+.B kurenai \-m \-i 2
+Monitor the system with a two second refresh interval.
+.TP
+.B KURENAI_ACCENT="0 255 180" kurenai
+Print the panel with a teal accent.
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 2
+Invalid option, invalid argument, or monitor mode without an interactive
+terminal.
+.SH SEE ALSO
+.BR df (1),
+.BR free (1),
+.BR top (1)
+.SH AUTHOR
+swbasmx <swbasmx@users.noreply.github.com>

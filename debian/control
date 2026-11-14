@@ -1,0 +1,23 @@
+Source: kurenai
+Section: utils
+Priority: optional
+Maintainer: swbasmx <swbasmx@users.noreply.github.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.7.0
+Rules-Requires-Root: no
+Homepage: https://github.com/swbasmx/kurenai
+Vcs-Git: https://github.com/swbasmx/kurenai.git
+Vcs-Browser: https://github.com/swbasmx/kurenai
+
+Package: kurenai
+Architecture: all
+Depends: bash (>= 4.0), ${misc:Depends}
+Recommends: curl, pciutils, iproute2
+Suggests: nvidia-driver
+Description: neon-red system information panel for the terminal
+ kurenai prints a compact two-column panel with system, hardware,
+ performance and memory information, using only Bash and the standard
+ /proc and /sys interfaces.
+ .
+ It can run once, for example from a shell startup file, or stay open
+ as a live monitor with an adjustable refresh interval and pause.
