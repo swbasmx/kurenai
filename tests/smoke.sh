@@ -101,6 +101,14 @@ if command -v script >/dev/null 2>&1; then
   (( frames == 3 )) || fail "monitor frames=$frames"
   pass 'monitor'
 
+  wheel_cmd=$(printf 'TERM=xterm-256color %q -m -n -l es -i 5' "$BIN")
+  { printf '\033[A\033[B\033[<64;10;5Mx'; sleep 1; printf 'q'; } |
+    "${TO[@]}" script -qec "$wheel_cmd" /dev/null > "$TMP/wheel" 2>/dev/null ||
+    fail 'monitor con rueda del ratón'
+  frames=$(grep -ao $'\033\[H\033\[2J' "$TMP/wheel" | wc -l)
+  (( frames == 1 )) || fail "la rueda redibujó el panel: frames=$frames"
+  pass 'monitor ignora la rueda'
+
   small_cmd=$(printf 'stty rows 10 cols 30; TERM=xterm-256color %q -m -n -l es -i 0.1 --frames 2' "$BIN")
   "${TO[@]}" script -qec "$small_cmd" /dev/null > "$TMP/monitor-small" 2>/dev/null || fail 'monitor terminal pequeña'
   grep -q 'terminal demasiado pequeña' "$TMP/monitor-small" || fail 'monitor no avisó de terminal pequeña'

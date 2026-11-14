@@ -264,6 +264,7 @@ Notes:
 - The public IP is looked up once per session (or when you press `r`); `-n` hides it.
 - The disk is refreshed every 5 s; the rest of the metrics on every tick.
 - If the terminal is below the minimum size, it shows a notice and waits for a resize or `q`.
+- The mouse wheel and arrow keys are ignored: they neither scroll the panel nor force a redraw.
 - On NVIDIA, GPU usage is polled in the background every few seconds so it never blocks the UI.
 
 ## Uninstall

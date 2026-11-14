@@ -1440,6 +1440,24 @@ run_once() {
   return 0
 }
 
+# Consume una secuencia de escape completa (flechas, rueda del ratón,
+# teclas de función) para que sus bytes no se traten como pulsaciones.
+# Se detiene en el byte final de la secuencia para no tragarse la tecla
+# que venga detrás.
+drain_escape() {
+  local ch n=0
+  IFS= read -rsn1 -t 0.01 ch || return 0
+  case $ch in
+    '[')
+      while (( n < 16 )) && IFS= read -rsn1 -t 0.01 ch; do
+        n=$(( n + 1 ))
+        [[ $ch == [[:alpha:]] || $ch == '~' ]] && break
+      done ;;
+    'O')
+      IFS= read -rsn1 -t 0.01 ch || true ;;
+  esac
+}
+
 run_monitor() {
   if (( ! is_tty )) || [[ ! -t 0 ]] || [[ ${TERM:-} == dumb ]]; then
     printf 'kurenai: %s\n' "$(t monitor_tty)" >&2
@@ -1469,50 +1487,63 @@ run_monitor() {
   while :; do
     key=''
     rc=0
+    redraw=0
     IFS= read -rsn1 -t "$wait_s" key || rc=$?
     if (( rc > 128 )); then
-      :
+      redraw=1
     elif (( rc != 0 )); then
       break
+    elif [[ $key == $'\e' ]]; then
+      drain_escape
+    elif [[ -n $key ]]; then
+      case $key in
+        q|Q) break ;;
+        p|P)
+          if (( paused )); then
+            paused=0
+            cpu_snapshot
+          else
+            paused=1
+          fi
+          redraw=1 ;;
+        +|=)
+          interval_ms=$(( interval_ms + 250 ))
+          if (( interval_ms > 10000 )); then interval_ms=10000; fi
+          update_wait
+          redraw=1 ;;
+        -|_)
+          interval_ms=$(( interval_ms - 250 ))
+          if (( interval_ms < 250 )); then interval_ms=250; fi
+          update_wait
+          redraw=1 ;;
+        r|R)
+          if (( ip_pending )); then poll_ip_fetch; fi
+          if (( ! ip_pending )); then start_ip_fetch 1; fi
+          collect_static
+          redraw=1 ;;
+        h|H)
+          if (( show_footer )); then show_footer=0; else show_footer=1; fi
+          redraw=1 ;;
+        *) : ;;
+      esac
     fi
-    case $key in
-      q|Q) break ;;
-      p|P)
-        if (( paused )); then
-          paused=0
-          cpu_snapshot
-        else
-          paused=1
-        fi ;;
-      +|=)
-        interval_ms=$(( interval_ms + 250 ))
-        if (( interval_ms > 10000 )); then interval_ms=10000; fi
-        update_wait ;;
-      -|_)
-        interval_ms=$(( interval_ms - 250 ))
-        if (( interval_ms < 250 )); then interval_ms=250; fi
-        update_wait ;;
-      r|R)
-        if (( ip_pending )); then poll_ip_fetch; fi
-        if (( ! ip_pending )); then start_ip_fetch 1; fi
-        collect_static ;;
-      h|H)
-        if (( show_footer )); then show_footer=0; else show_footer=1; fi ;;
-    esac
     if (( resized )); then
       resized=0
       update_size
+      redraw=1
     fi
-    if (( ! paused )); then
-      tick=$(( tick + 1 ))
-      with_disk=0
-      if (( tick % 5 == 0 )); then with_disk=1; fi
-      collect_dynamic_tick "$with_disk"
-      poll_ip_fetch
+    if (( redraw )); then
+      if (( ! paused )); then
+        tick=$(( tick + 1 ))
+        with_disk=0
+        if (( tick % 5 == 0 )); then with_disk=1; fi
+        collect_dynamic_tick "$with_disk"
+        poll_ip_fetch
+      fi
+      render_monitor_frame
+      frames=$(( frames + 1 ))
+      if (( max_frames > 0 && frames >= max_frames )); then break; fi
     fi
-    render_monitor_frame
-    frames=$(( frames + 1 ))
-    if (( max_frames > 0 && frames >= max_frames )); then break; fi
   done
   monitor_leave
   return 0

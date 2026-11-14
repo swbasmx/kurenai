@@ -264,6 +264,7 @@ Notas:
 - La IP pública se consulta una vez por sesión (o al pulsar `r`); `-n` la oculta.
 - El disco se refresca cada 5 s; el resto de métricas, cada tick.
 - Si la terminal no llega al tamaño mínimo, muestra un aviso y espera a que la redimensiones o pulses `q`.
+- La rueda del ratón y las flechas se ignoran: no desplazan el panel ni fuerzan un redibujado.
 - En NVIDIA, el uso de GPU se actualiza en segundo plano cada pocos segundos para no bloquear la interfaz.
 
 ## Desinstalación
