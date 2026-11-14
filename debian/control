@@ -1,7 +1,7 @@
 Source: kurenai
 Section: utils
 Priority: optional
-Maintainer: swbasmx <swbasmx@users.noreply.github.com>
+Maintainer: swbasmx <enigmacodigo641@gmail.com>
 Build-Depends: debhelper-compat (= 13)
 Standards-Version: 4.7.0
 Rules-Requires-Root: no
