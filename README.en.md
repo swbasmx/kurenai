@@ -134,6 +134,17 @@ There are two ways to use it:
 
 ## Installation
 
+### From the PPA (Ubuntu)
+
+```bash
+sudo add-apt-repository ppa:swbasmx/kurenai
+sudo apt install kurenai
+```
+
+The `kurenai` package is built for Ubuntu 22.04 (jammy) and updates with `apt upgrade`. It installs only the command and the manual page: it does not touch `~/.bashrc` or run anything when a terminal opens. Autostart is your call (see below, or use `kurenai -m`).
+
+### With the installer
+
 ```bash
 curl -fsSLO https://raw.githubusercontent.com/swbasmx/kurenai/main/install.sh
 sudo bash install.sh
