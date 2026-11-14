@@ -47,8 +47,10 @@ jobs:
           set -euo pipefail
           sudo dpkg -i dist/kurenai_*.deb
           kurenai -V
-          COLUMNS=80 kurenai -n -q -l en | grep -q SYSTEM
-          man -P cat kurenai | head -n 5
+          COLUMNS=80 kurenai -n -q -l en > dist/panel.txt
+          grep -q SYSTEM dist/panel.txt
+          man -P cat kurenai > dist/man.txt
+          sed -n '1,5p' dist/man.txt
 
       - uses: actions/upload-artifact@v4
         with:
