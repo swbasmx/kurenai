@@ -28,7 +28,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends \
-            debhelper devscripts lintian fakeroot
+            build-essential debhelper devscripts lintian fakeroot
 
       - name: Build package
         run: |
