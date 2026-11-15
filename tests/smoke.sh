@@ -87,6 +87,17 @@ if "$BIN" -l fr >/dev/null 2>&1; then fail '-l fr debería fallar'; fi
 if "$BIN" -t abc >/dev/null 2>&1; then fail '-t abc debería fallar'; fi
 pass 'opciones'
 
+fake=$TMP/fakebin
+mkdir -p "$fake"
+printf '#!/bin/sh\nexit 7\n' > "$fake/curl"
+chmod +x "$fake/curl"
+if ! PATH="$fake:$PATH" XDG_CACHE_HOME="$TMP/cache" "$BIN" -q -l es > "$TMP/nonet" 2> "$TMP/nonet.err"; then
+  fail "sin red terminó con error: $(cat "$TMP/nonet.err")"
+fi
+[[ -s $TMP/nonet.err ]] && fail "sin red escribió en stderr: $(cat "$TMP/nonet.err")"
+grep -q 'sin conexión' "$TMP/nonet" || fail 'sin red no mostró el estado offline'
+pass 'sin red'
+
 if command -v script >/dev/null 2>&1; then
   if command -v timeout >/dev/null 2>&1; then TO=(timeout 15); else TO=(); fi
   mon_cmd=$(printf 'TERM=xterm-256color %q -m -n -l es -i 0.1 --frames 3' "$BIN")

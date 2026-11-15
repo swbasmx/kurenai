@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-VERSION=3.2
+VERSION=3.2.1
 CACHE_DIR=${XDG_CACHE_HOME:-$HOME/.cache}/kurenai
 CACHE_FILE=$CACHE_DIR/public-ip
 TTL=900
@@ -45,6 +45,7 @@ gpu_poll_pid=''
 gpu_poll_file=''
 gpu_poll_new=''
 ip_pending=0
+pub=''
 stty_saved=''
 prev_cpu_total=''
 prev_cpu_idle=''
@@ -664,7 +665,7 @@ finish_ip_fetch() {
   fi
   if (( ! net )); then
     pub=$L_DISABLED_NET
-  elif [[ -z $pub ]]; then
+  elif [[ -z ${pub:-} ]]; then
     pub=$L_OFFLINE
   fi
   return 0

@@ -1,3 +1,9 @@
+kurenai (3.2.1-1) unstable; urgency=medium
+
+  * Fix unbound variable when the public IP lookup returns nothing.
+
+ -- swbasmx <enigmacodigo641@gmail.com>  Sat, 14 Nov 2026 18:47:03 -0600
+
 kurenai (3.2-1) unstable; urgency=medium
 
   * Initial packaging.
