@@ -43,6 +43,11 @@ srcdir=$work/kurenai-$upstream
 mkdir -p "$srcdir"
 git -C "$ROOT" archive --format=tar HEAD | tar -x -C "$srcdir"
 
+orig=$work/kurenai_${upstream}.orig.tar.gz
+if [[ ! -f $orig ]]; then
+  tar --exclude="kurenai-$upstream/debian" -czf "$orig" -C "$work" "kurenai-$upstream"
+fi
+
 {
   printf 'kurenai (%s) %s; urgency=medium\n\n' "$version" "$SERIES"
   printf '  * Build for Ubuntu %s.\n\n' "$SERIES"
